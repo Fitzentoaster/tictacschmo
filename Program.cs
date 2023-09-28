@@ -1,9 +1,18 @@
-﻿//This is the first line
+//This is the first line
+
+using System.Runtime.CompilerServices;
 
 namespace TicTacSchmo
 {
     class TTS
     {
+        
+        public const char secondPlayer = 'O';
+        public const char firstPlayer = 'X';
+        public const char emptySquare = 'N';
+        public const string betweenLine = "-----";
+        public const char delim = '|';
+
         private Dictionary<int, char> myBoard = new();
 
         private void InitBoard()
@@ -11,7 +20,7 @@ namespace TicTacSchmo
             myBoard.Clear();
             for (int i = 0; i < 9; i++)
             {
-                myBoard.Add(i, 'N');
+                myBoard.Add(i, emptySquare);
             }
         }
 
@@ -33,18 +42,18 @@ namespace TicTacSchmo
             foreach (int[] combination in winningCombinations)
             {
                 char firstCell = myBoard[combination[0]];
-                if (firstCell != 'N' && firstCell == myBoard[combination[1]] && firstCell == myBoard[combination[2]])
+                if (firstCell != emptySquare && firstCell == myBoard[combination[1]] && firstCell == myBoard[combination[2]])
                 {
                     return firstCell;
                 }
             }
 
-            return 'N';
+            return emptySquare;
         }
 
         private bool CheckForCatsGameMeow()
         {
-            if (myBoard.ContainsValue('N'))
+            if (myBoard.ContainsValue(emptySquare))
             {
                 return false;
             }
@@ -65,7 +74,7 @@ namespace TicTacSchmo
 
         private bool SetPlayerMove(int space)
         {
-            if (myBoard[space] == 'X' || myBoard[space] == 'O')
+            if (myBoard[space] != emptySquare)
             {
                 return false;
             }
@@ -75,7 +84,7 @@ namespace TicTacSchmo
             }
             else
             {
-                myBoard[space] = 'X';
+                myBoard[space] = firstPlayer;
                 return true;
             }
         }
@@ -84,13 +93,13 @@ namespace TicTacSchmo
         {
             Random rnd = new Random();
             int space = rnd.Next(0, 9);
-            if (myBoard[space] == 'X' || myBoard[space] == 'O')
+            if (myBoard[space] != emptySquare)
             {
                 return false;
             }
             else
             {
-                myBoard[space] = 'O';
+                myBoard[space] = secondPlayer;
                 return true;
             }
         }
@@ -98,25 +107,25 @@ namespace TicTacSchmo
         private void ShowBoard()
         {
             Console.Clear();
-            Console.WriteLine(myBoard[0].ToString() + "|" + myBoard[1].ToString() + "|" + myBoard[2].ToString());
-            Console.WriteLine("-----");
-            Console.WriteLine(myBoard[3].ToString() + "|" + myBoard[4].ToString() + "|" + myBoard[5].ToString());
-            Console.WriteLine("-----");
-            Console.WriteLine(myBoard[6].ToString() + "|" + myBoard[7].ToString() + "|" + myBoard[8].ToString());
+            Console.WriteLine(myBoard[0].ToString() + delim + myBoard[1].ToString() + delim + myBoard[2].ToString());
+            Console.WriteLine(betweenLine);
+            Console.WriteLine(myBoard[3].ToString() + delim + myBoard[4].ToString() + delim + myBoard[5].ToString());
+            Console.WriteLine(betweenLine);
+            Console.WriteLine(myBoard[6].ToString() + delim + myBoard[7].ToString() + delim + myBoard[8].ToString());
         }
 
         static void Main(string[] args)
         {
             TTS myTTS = new TTS();
             myTTS.InitBoard();
-            while (myTTS.CheckForWinner() == 'N' && !myTTS.CheckForCatsGameMeow())
+            while (myTTS.CheckForWinner() == emptySquare && !myTTS.CheckForCatsGameMeow())
             {
                 myTTS.ShowBoard();
-                if (myTTS.CheckForWinner() == 'N')
+                if (myTTS.CheckForWinner() == emptySquare)
                 {
                     myTTS.GetPlayerMove();
                 }
-                if (myTTS.CheckForWinner() == 'N')
+                if (myTTS.CheckForWinner() == emptySquare)
                 {
                     while (!myTTS.CPUMove()) { }
                 }
@@ -124,13 +133,13 @@ namespace TicTacSchmo
             myTTS.ShowBoard();
             switch (myTTS.CheckForWinner())
             {
-                case 'N':
+                case emptySquare:
                     Console.WriteLine("Cat's Game!");
                     break;
-                case 'X':
+                case firstPlayer:
                     Console.WriteLine("You Win!");
                     break;
-                case 'O':
+                case secondPlayer:
                     Console.WriteLine("The CPU Won!");
                     break;
             }
